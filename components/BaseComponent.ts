@@ -1,11 +1,10 @@
-import { Page, Locator } from '@playwright/test';
+import { Locator } from '@playwright/test';
  
 export abstract class BaseComponent {
-  protected readonly page: Page;
+  
   protected readonly root: Locator;
  
-  constructor(page: Page, root: Locator) {
-    this.page = page;
+  constructor( root: Locator) {
     this.root = root;
   }
  

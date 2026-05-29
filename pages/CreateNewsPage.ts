@@ -1,9 +1,7 @@
 import { Page, Locator } from '@playwright/test';
 import { BasePage } from './BasePage';
-import { HeaderComponent } from '../components/HeaderComponent';
 
 export class CreateNewsPage extends BasePage {
-  readonly header: HeaderComponent;
 
   // ── Form fields ────────────────────────────────────────────────────────
   readonly titleBlock: Locator;
@@ -48,7 +46,6 @@ export class CreateNewsPage extends BasePage {
 
   constructor(page: Page) {
     super(page);
-    this.header = new HeaderComponent(page);
 
     // Title
     this.titleBlock   = page.locator('.form-container .title-block');

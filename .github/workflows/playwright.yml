@@ -36,6 +36,12 @@ jobs:
       - name: Run Playwright tests
         run: npm test
         env:
+          BASE_URL: ${{ secrets.BASE_URL }}
+          LOGIN: ${{ secrets.LOGIN }}
+          PASSWORD: ${{ secrets.PASSWORD }}
+          HEADLESS: ${{ secrets.HEADLESS }}
+          RETRIES: ${{ secrets.RETRIES }}
+          TIMEOUT: ${{ secrets.TIMEOUT }}
           CI: true
         continue-on-error: true
  

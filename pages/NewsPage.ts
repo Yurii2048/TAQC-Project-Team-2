@@ -1,16 +1,13 @@
 import { Page, Locator } from '@playwright/test';
 import { BasePage } from './BasePage';
-import { HeaderComponent } from '../components/HeaderComponent';
 
 export class NewsPage extends BasePage {
-  readonly header: HeaderComponent;
   readonly createNewsButton: Locator;
   readonly newsCards: Locator;
   readonly filterTags: Locator;
 
   constructor(page: Page) {
     super(page);
-    this.header          = new HeaderComponent(page);
     this.createNewsButton = page.getByRole('link', { name: /create news/i })
                               .or(page.locator('.create-button, .add-news-btn'));
     this.newsCards       = page.locator('app-news-list-gallery-view, .news-card, app-eco-news-widget');

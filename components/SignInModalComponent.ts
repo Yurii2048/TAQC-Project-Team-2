@@ -10,7 +10,7 @@ export class SignInModalComponent extends BaseComponent {
   readonly forgotPasswordLink: Locator;
 
   constructor(page: Page) {
-    super(page, page.locator('//app-auth-modal'));
+    super(page.locator('//app-auth-modal'));
 
     this.emailInput        = this.locator('#email');
     this.passwordInput     = this.locator('#password');
