@@ -1,0 +1,5 @@
+"DESCRIPTION","DURATION IN MS","NAME","PARENT SUITE","START TIME","STATUS","STOP TIME","SUB SUITE","SUITE","TEST CLASS","TEST METHOD"
+"","30180","should validate the Title field and control the Publish button state","chromium","2026-05-29","broken","2026-05-29","TC-02 | Create News Form — Title validation and Publish button state","TC-02.spec.ts","",""
+"","4","should validate the Title field and control the Publish button state","firefox","2026-05-29","failed","2026-05-29","TC-02 | Create News Form — Title validation and Publish button state","TC-02.spec.ts","",""
+"","4","should display all required fields in the correct order","firefox","2026-05-29","failed","2026-05-29","TC-01 | Create News Form — fields presence and order","TC-01.spec.ts","",""
+"","30186","should display all required fields in the correct order","chromium","2026-05-29","broken","2026-05-29","TC-01 | Create News Form — fields presence and order","TC-01.spec.ts","",""
