@@ -18,6 +18,9 @@ export class CreateNewsPage extends BasePage {
   readonly tagInitiatives: Locator;
   readonly tagAds: Locator;
 
+  readonly fileInput: Locator;
+  readonly imageErrorMessage: Locator;
+
   readonly imageBlock: Locator;
   readonly addImageButton: Locator;
 
@@ -39,10 +42,16 @@ export class CreateNewsPage extends BasePage {
   readonly cancelButton: Locator;
   readonly previewButton: Locator;
   readonly publishButton: Locator;
+  
+  // Нові локатори для модалки скасування
+  readonly confirmationModal: Locator;
+  readonly yesCancelButton: Locator;
+  readonly continueEditingButton: Locator;
 
   // ── Validation messages ────────────────────────────────────────────────
   readonly mainTextError: Locator;
   readonly titleError: Locator;
+  readonly sourceError: Locator;
 
   constructor(page: Page) {
     super(page);
@@ -52,7 +61,7 @@ export class CreateNewsPage extends BasePage {
     this.titleName    = page.locator('.title-block h3');
     this.titleInput   = page.locator('.title-block label');
     this.titleCounter = page.locator('.title-block .field-info');
-    this.titleTextArea = page.locator('.title-block textarea')
+    this.titleTextArea = page.locator('.title-block textarea');
 
     // Tags
     this.tagsBlock      = page.locator('.form-container .tags-block');
@@ -66,6 +75,8 @@ export class CreateNewsPage extends BasePage {
     // Image
     this.imageBlock     = page.locator('.form-container .image-block');
     this.addImageButton = page.locator('.image-block label');
+    this.fileInput      = page.locator('input#upload'); 
+    this.imageErrorMessage = page.locator('p.warning-color');
 
     // Source
     this.sourceBlock       = page.locator('.form-container .source-block');
@@ -77,10 +88,8 @@ export class CreateNewsPage extends BasePage {
     this.mainTextCounter = page.locator('.textarea-wrapper .field-info');
 
     // Read-only fields
-
     this.dateValue = page.locator('.date p', {hasText: 'Date:'}).locator('span').nth(1);
     this.authorValue = page.locator('.date p', {hasText: 'Author:'}).locator('span').nth(1);
-
 
     this.authorField = page.locator('.form-container .date');
     this.dateField   = page.locator('.date span');
@@ -92,10 +101,14 @@ export class CreateNewsPage extends BasePage {
     this.previewButton = page.locator('.submit-buttons .secondary-global-button');
     this.publishButton = page.locator('.submit-buttons .primary-global-button');
 
+    // Ініціалізація нових локаторів модалки всередині конструктора:
+    this.confirmationModal = page.locator('app-warning-pop-up').first();
+    this.yesCancelButton = page.locator('app-warning-pop-up .primary-global-button');
+    this.continueEditingButton = page.locator('app-warning-pop-up .secondary-global-button');
     // Errors
-    this.mainTextError = page.locator('.main-text-error, [class*="text"] .error, mat-error')
-                           .filter({ hasText: /minimum.*20|20.*minimum|63.?206/i });
+    this.mainTextError = page.locator('.textarea-wrapper + .error, .main-text-error, mat-error, p[class*="error"]').first();
     this.titleError    = page.locator('mat-error, .error').filter({ hasText: /title/i });
+    this.sourceError = page.locator('.source-block app-field-error, .source-block .error, .source-block mat-error, p[class*="error"]').first();
   }
 
   get url(): string {
@@ -136,7 +149,6 @@ export class CreateNewsPage extends BasePage {
   }
 
   async blurTitleField(): Promise<void> {
-    // Click another element to trigger touched/blur state on the Title field
     await this.mainTextInput.click();
   }
 
@@ -144,11 +156,11 @@ export class CreateNewsPage extends BasePage {
 
   async clickTag(tagName: 'News' | 'Events' | 'Education' | 'Initiatives' | 'Ads'): Promise<void> {
     const tagLocators = {
-      News:        this.tagNews,
-      Events:      this.tagEvents,
-      Education:   this.tagEducation,
-      Initiatives: this.tagInitiatives,
-      Ads:         this.tagAds,
+      News:         this.tagNews,
+      Events:       this.tagEvents,
+      Education:    this.tagEducation,
+      Initiatives:  this.tagInitiatives,
+      Ads:          this.tagAds,
     };
     await tagLocators[tagName].click();
   }
@@ -167,7 +179,6 @@ export class CreateNewsPage extends BasePage {
 
   async fillMainText(text: string): Promise<void> {
     await this.mainTextInput.click();
-    // Clear first (triple-click selects all, then type replaces)
     await this.mainTextInput.press('Control+a');
     await this.mainTextInput.fill(text);
   }
@@ -183,7 +194,6 @@ export class CreateNewsPage extends BasePage {
   }
 
   async getMainTextLength(): Promise<number> {
-    // For quill editor, get text content
     const text = await this.mainTextInput.textContent();
     return (text ?? '').length;
   }
@@ -258,5 +268,9 @@ export class CreateNewsPage extends BasePage {
 
   async waitForFormReady(): Promise<void> {
     await this.publishButton.waitFor({ state: 'visible' });
+  }
+
+  async uploadImage(filePath: string): Promise<void> {
+    await this.fileInput.setInputFiles(filePath);
   }
 }
