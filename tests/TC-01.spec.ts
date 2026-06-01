@@ -60,7 +60,7 @@ test.describe('TC-01 | Create News Form — fields presence and order', () => {
         const dateValue = (await form.getDateValue()).trim();
 
         const expectedDate = new Date().toLocaleDateString('en-US', {
-          month: 'long',
+          month: 'short',
           day: 'numeric',
           year: 'numeric',
         });

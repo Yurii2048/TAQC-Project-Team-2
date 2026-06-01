@@ -17,6 +17,7 @@ export class CreateNewsPage extends BasePage {
   readonly tagEducation: Locator;
   readonly tagInitiatives: Locator;
   readonly tagAds: Locator;
+  readonly tagClicked: Locator;
 
   readonly imageBlock: Locator;
   readonly addImageButton: Locator;
@@ -62,6 +63,7 @@ export class CreateNewsPage extends BasePage {
     this.tagEducation   = page.locator('.tags-block .text').filter({ hasText: /^Education$/i });
     this.tagInitiatives = page.locator('.tags-block .text').filter({ hasText: /^Initiatives$/i });
     this.tagAds         = page.locator('.tags-block .text').filter({ hasText: /^Ads$/i });
+    this.tagClicked     = page.locator('.global-tag-clicked')
 
     // Image
     this.imageBlock     = page.locator('.form-container .image-block');
@@ -136,7 +138,6 @@ export class CreateNewsPage extends BasePage {
   }
 
   async blurTitleField(): Promise<void> {
-    // Click another element to trigger touched/blur state on the Title field
     await this.mainTextInput.click();
   }
 
@@ -159,15 +160,32 @@ export class CreateNewsPage extends BasePage {
 
   async isTagSelected(tagName: string): Promise<boolean> {
     const tag = this.tagButtons.filter({ hasText: tagName });
-    const classes = (await tag.getAttribute('class')) ?? '';
-    return classes.includes('selected') || classes.includes('active') || classes.includes('checked');
+    const inner = tag.locator('a');
+    const classes = (await inner.getAttribute('class')) ?? '';
+    return classes.includes('global-tag-clicked');
+  } 
+
+  async getSelectedTagCount(): Promise<number> {
+    const allTags = await this.tagClicked.all();
+    return allTags.length;;
+  }
+
+  async navigateToCreateNews(page: Page): Promise<void> {
+    const newsLink = page.locator('app-header').getByRole('link', { name: /eco.?news/i });
+    await newsLink.click();
+    await page.waitForURL(/news/, { timeout: 10_000 });
+
+    const createBtn = page
+      .getByRole('link', { name: /create news/i })
+      .or(page.locator('.create-button, .add-news-btn'));
+    await createBtn.click();
+    await page.waitForURL(/create-news/, { timeout: 10_000 });
   }
 
   // ── Main text actions ────────────────────────────────────────────────────
 
   async fillMainText(text: string): Promise<void> {
     await this.mainTextInput.click();
-    // Clear first (triple-click selects all, then type replaces)
     await this.mainTextInput.press('Control+a');
     await this.mainTextInput.fill(text);
   }
