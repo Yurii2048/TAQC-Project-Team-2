@@ -1,4 +1,4 @@
-import { Page, Locator } from '@playwright/test';
+import { Page, Locator, expect } from '@playwright/test';
 import { BasePage } from './BasePage';
 
 export class CreateNewsPage extends BasePage {
@@ -60,7 +60,7 @@ export class CreateNewsPage extends BasePage {
     // Title
     this.titleBlock   = page.locator('.form-container .title-block');
     this.titleName    = page.locator('.title-block h3');
-    this.titleInput   = page.locator('.title-block label');
+    this.titleInput = page.locator('.title-block textarea');
     this.titleCounter = page.locator('.title-block .field-info');
     this.titleTextArea = page.locator('.title-block textarea');
 
@@ -124,8 +124,8 @@ export class CreateNewsPage extends BasePage {
   // ── Title actions ────────────────────────────────────────────────────────
 
   async fillTitle(text: string): Promise<void> {
-    await this.titleInput.fill(text);
-  }
+  await this.titleTextArea.fill(text);
+}
 
   async getTitleCounterText(): Promise<string> {
     return (await this.titleCounter.textContent()) ?? '';
@@ -195,7 +195,7 @@ export class CreateNewsPage extends BasePage {
     await page.waitForURL(/create-news/, { timeout: 10_000 });
   }
 
-  // ── Main text actions ────────────────────────────────────────────────────
+ // ── Main text actions ────────────────────────────────────────────────────
 
   async fillMainText(text: string): Promise<void> {
     await this.mainTextInput.click();
@@ -203,10 +203,10 @@ export class CreateNewsPage extends BasePage {
     await this.mainTextInput.fill(text);
   }
 
-  async fillMainTextByTyping(text: string): Promise<void> {
-    await this.mainTextInput.click();
-    await this.page.keyboard.press('Control+a');
-    await this.page.keyboard.type(text);
+    await this.page.keyboard.press('Control+A');
+    await this.page.keyboard.press('Backspace');
+
+    await this.page.keyboard.type(text, { delay: 20 });
   }
 
   async getMainTextCounterText(): Promise<string> {
@@ -222,6 +222,15 @@ export class CreateNewsPage extends BasePage {
 
   async fillSource(url: string): Promise<void> {
     await this.sourceInput.fill(url);
+  }
+// ─────────────────────────────────────────────
+
+  async createNews(title: string, content: string, tag = 'News') {
+    await expect(this.titleBlock).toBeVisible({ timeout: 15000 });
+
+    await this.fillTitle(title);
+    await this.clickTag(tag);
+    await this.fillMainText(content);
   }
 
   // ── Author / Date getters ─────────────────────────────────────────────────
@@ -259,8 +268,9 @@ export class CreateNewsPage extends BasePage {
   }
 
   async clickPublish(): Promise<void> {
-    await this.publishButton.click();
-  }
+  await this.publishButton.scrollIntoViewIfNeeded();
+  await this.publishButton.click();
+}
 
   async isPublishEnabled(): Promise<boolean> {
     return this.publishButton.isEnabled();
@@ -286,6 +296,7 @@ export class CreateNewsPage extends BasePage {
     return this.publishButton.isVisible();
   }
 
+<<<<<<< HEAD
   async waitForFormReady(): Promise<void> {
     await this.publishButton.waitFor({ state: 'visible' });
   }
@@ -293,4 +304,23 @@ export class CreateNewsPage extends BasePage {
   async uploadImage(filePath: string): Promise<void> {
     await this.fileInput.setInputFiles(filePath);
   }
+=======
+  // ─────────────────────────────────────────────
+// COMPATIBILITY LAYER (team-safe aliases)
+// ─────────────────────────────────────────────
+
+async setTitle(text: string): Promise<void> {
+  await this.fillTitle(text);
+}
+
+async selectTag(tag: 'News' | 'Events' | 'Education' | 'Initiatives' | 'Ads'): Promise<void> {
+  await this.clickTag(tag);
+}
+
+async clearMainText(): Promise<void> {
+  await this.mainTextInput.click();
+  await this.page.keyboard.press('Control+A');
+  await this.page.keyboard.press('Backspace');
+}
+>>>>>>> 2c0724e (fix: TC-08 and  TC-09 and TC-10 test fixes)
 }

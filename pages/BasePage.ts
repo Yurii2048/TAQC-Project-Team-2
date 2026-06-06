@@ -24,6 +24,9 @@ export abstract class BasePage {
     await expect(this.page).toHaveURL(new RegExp(this.url));
   }
  
+  async waitForUrl(urlPart: string): Promise<void> {
+    await this.page.waitForURL(new RegExp(urlPart));
+  }
   getCurrentUrl(): string {
     return this.page.url();
   }

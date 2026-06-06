@@ -1,3 +1,5 @@
+
+import * as allure from 'allure-js-commons';
 import { Page, Locator } from '@playwright/test';
 import { BaseComponent } from './BaseComponent';
 
@@ -42,4 +44,24 @@ export class HeaderComponent extends BaseComponent {
     return this.userAvatarButton.isVisible();
   }
   
+// ── Allure-методи для TC-08, TC-09, TC-10 ────────────────────────────────
+  // Делегують виклик оригінальним методам — логіка не дублюється.
+
+  async clickSignInWithStep(): Promise<void> {
+    await allure.step('Header: натиснути кнопку Sign In', async () => {
+      await this.clickSignIn();
+    });
+  }
+
+  async isUserLoggedInWithStep(): Promise<boolean> {
+    return await allure.step('Header: перевірити чи користувач авторизований', async () => {
+      return this.isUserLoggedIn();
+    });
+  }
+
+  async signOutWithStep(): Promise<void> {
+    await allure.step('Header: вийти з акаунту', async () => {
+      await this.signOut();
+    });
+  }
 }

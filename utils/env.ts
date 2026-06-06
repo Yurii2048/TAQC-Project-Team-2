@@ -8,6 +8,6 @@ const LOGIN = String(process.env.LOGIN);
 const PASSWORD = String(process.env.PASSWORD);
 const HEADLESS = process.env.HEADLESS === 'true';
 const RETRIES = process.env.RETRIES;
-const TIMEOUT = Number(process.env.TIMEOUT) || 30000;
+const TIMEOUT = Number(process.env.TIMEOUT) || 60000;
 
 export { BASE_URL, LOGIN, PASSWORD, HEADLESS, RETRIES, TIMEOUT };
